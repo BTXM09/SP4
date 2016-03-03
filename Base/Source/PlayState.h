@@ -21,7 +21,7 @@ public:
 	void Cleanup();
 
 	void Pause();
-	void Resume();
+	void Resume(bool m_resume);
 
 	void HandleEvents(CGameStateManager* theGSM);
 	void HandleEvents(CGameStateManager* theGSM, const unsigned char key, const bool status = true);
@@ -41,7 +41,7 @@ protected:
 private:
 	static CPlayState thePlayState;
 	int counter;
-
+	bool Resumez;
 	//Declare variables to store the last and current mouse position
 	double mouse_last_x, mouse_last_y, mouse_diff_x, mouse_diff_y;
 	double camera_yaw, camera_pitch;

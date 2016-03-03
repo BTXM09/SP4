@@ -4,7 +4,9 @@
 #include "timer.h"
 #include "GameStateManager.h"
 #include "playstate.h"
+#include "menustate.h"
 #include "LuaUsage.h"
+#include "SceneManager2DforScreen.h"
 
 class Application
 {
@@ -22,7 +24,7 @@ public:
 	/*static void GetWindowWidth(int&);
 	static void GetWindowHeight(int&);*/
 	
-	
+	void CheckInit();
 
 	void Init();
 	void Run();

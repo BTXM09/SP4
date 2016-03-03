@@ -4,7 +4,9 @@ using namespace std;
 #include "gamestate.h"
 #include "GameStateManager.h"
 #include "playstate.h"
-#include "menustate.h"
+#include "pausestate.h"
+#include "WinState.h"
+#include "LevelSelectState.h"
 
 CPlayState CPlayState::thePlayState;
 
@@ -18,7 +20,7 @@ void CPlayState::Init()
 	#if TYPE_OF_VIEW == 3
 		scene = new CSceneManager(800, 600);	// Use this for 3D gameplay
 	#else
-		scene = new CSceneManager2D();	// Use this for 2D gameplay
+	scene = new CSceneManager2D(800, 600);	// Use this for 2D gameplay
 	#endif
 	scene->Init();
 }
@@ -33,8 +35,9 @@ void CPlayState::Init(const int width, const int height)
 	#if TYPE_OF_VIEW == 3
 		scene = new CSceneManager(width, height);	// Use this for 3D gameplay
 	#else
-		scene = new CSceneManager2D();	// Use this for 2D gameplay
+	scene = new CSceneManager2D(width, height);	// Use this for 2D gameplay
 	#endif
+	this->Resumez = false;
 	scene->Init();
 }
 
@@ -56,9 +59,17 @@ void CPlayState::Pause()
 #endif
 }
 
-void CPlayState::Resume()
+void CPlayState::Resume(bool m_resume)
 {
 #if GSM_DEBUG_MODE
+
+	if (m_resume)
+	{
+		this->Resumez = m_resume;
+		scene->SetQuitfrompause(m_resume);
+	}
+	else
+	scene->PreInit();
 	cout << "CPlayState::Resume\n" << endl;
 #endif
 }
@@ -67,12 +78,10 @@ void CPlayState::HandleEvents(CGameStateManager* theGSM)
 {
 #if GSM_DEBUG_MODE
 	//int m_iUserChoice = -1;
-
 	//do {
 	//	cout << "CPlayState: Choose one <0> Go to Menu State : " ;
 	//	cin >> m_iUserChoice;
 	//	cin.get();
-
 	//	switch (m_iUserChoice) {
 	//		case 0:
 	//			theGSM->ChangeState( CMenuState::Instance() );
@@ -109,8 +118,12 @@ void CPlayState::HandleEvents(CGameStateManager* theGSM, const unsigned char key
 #endif
 	if (key == 32)
 	{
-		theGSM->ChangeState( CMenuState::Instance() );
+		theGSM->PushState(CPauseState::Instance());
 	}
+	/*if (key == 32)
+	{
+		theGSM->ChangeState( CMenuState::Instance() );
+	}*/
 	/*else
 	{
 		scene->UpdateAvatarStatus( key, status );
@@ -168,6 +181,18 @@ void CPlayState::Update(CGameStateManager* theGSM, const double m_dElapsedTime)
 {
 	// Update the scene
 	scene->Update(m_dElapsedTime);
+	if (scene->GetWinCondition() == 1)
+	{
+		theGSM->ChangeState(CWinState::Instance());
+	}
+	else if (scene->GetWinCondition() == -1 && scene->GetLoseCondition())
+	{
+		theGSM->ChangeState(CLevelSelectState::Instance());
+	}
+	if (this->Resumez)
+	{
+		theGSM->ChangeState(CMenuState::Instance());
+	}
 }
 
 void CPlayState::Draw(CGameStateManager* theGSM)

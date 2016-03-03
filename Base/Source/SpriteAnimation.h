@@ -1,6 +1,7 @@
 #ifndef SPRITE_ANIMATION_H
 #define SPRITE_ANIMATION_H
 #include "Mesh.h"
+#include "Vector3.h"
 
 struct Animation
 {
@@ -18,17 +19,23 @@ struct Animation
 class SpriteAnimation : public Mesh
 {
 public:
+	SpriteAnimation();
 	 SpriteAnimation(const std::string &meshName, int row, int col);
 	~SpriteAnimation();
 	void Update(double dt);
 	virtual void Render();
-
+	int index;
 	int m_row;
 	int m_col;
+	int speed;
+	float x;
+	float y;
+	Vector3 direction;
 
 	float m_currentTime;
 	int m_currentFrame;
 	int m_playCount;
 	Animation *m_anim;
+
 };
 #endif

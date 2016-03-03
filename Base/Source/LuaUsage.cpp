@@ -3,103 +3,77 @@
 
 LuaUsage::LuaUsage(void) 
 :LuaState(NULL)
+, Errorstring("")
+, Filename("")
 {
 }
 
 LuaUsage::~LuaUsage(void)
 {
 }
-
+bool LuaUsage::LuaUsageCheckit(string LuaFileName)
+{
+	bool Returned = false;
+	Filename = LuaFileName;
+	LuaState = lua_open();
+	string LuaOpenFilename = "Lua/";
+	LuaOpenFilename = LuaOpenFilename + LuaFileName;
+	LuaOpenFilename = LuaOpenFilename + ".lua";
+	if (luaL_loadfile(LuaState, LuaOpenFilename.c_str()) || lua_pcall(LuaState, 0, 0, 0))
+	{
+		Returned = true;
+		std::cout << "Error: failed to load (" << LuaFileName << ")" << std::endl;
+		LuaState = NULL;
+	}
+	if (LuaState)
+		luaL_openlibs(LuaState);
+	LuaUsageClose();
+	return Returned;
+}
 void LuaUsage::LuaUsageInit(string LuaFileName)
 {
+	Filename = LuaFileName;
 	LuaState = lua_open();
-	luaL_openlibs(LuaState);
-
-	if (luaL_loadfile(LuaState, LuaFileName.c_str()) || lua_pcall(LuaState, 0, 0, 0))
+	string LuaOpenFilename = "Lua/";
+	LuaOpenFilename = LuaOpenFilename + LuaFileName;
+	LuaOpenFilename = LuaOpenFilename + ".lua";
+	if (luaL_loadfile(LuaState, LuaOpenFilename.c_str()) || lua_pcall(LuaState, 0, 0, 0))
 	{
-		LuaErrorLog(LuaFileName);
-		exit(EXIT_FAILURE);
+		std::cout << "Error: failed to load (" << LuaFileName << ")" << std::endl;
+		LuaState = NULL;
 	}
+	if (LuaState)
+		luaL_openlibs(LuaState);
+}
+
+void LuaUsage::Seterrorstring(const string& Variablename, const string& reason)
+{
+	Errorstring = Errorstring + Variablename + ": " + reason + "\n";
 }
 
 void LuaUsage::LuaUsageClose()
 {
-	lua_close(LuaState);
-}
-
-int LuaUsage::GetIntegerValue(string Values)
-{
-	int returnvalue = 0;
-
-	lua_getglobal(LuaState, Values.c_str());
-	if (!lua_isnumber(LuaState, -1))
+	if (LuaState)
+		lua_close(LuaState);
+	if (Errorstring.size() > 1)
 	{
-		LuaErrorLog(Values);
-		exit(EXIT_FAILURE);
+		LuaErrorLog();
 	}
-	ofstream Error("ErrorLog.lua");
+}
+void LuaUsage::clean()
+{
+	int i = lua_gettop(LuaState);
+	lua_pop(LuaState, i);
+}
+void LuaUsage::LuaErrorLog()
+{
+	string thefilename = "Lua/";
+	thefilename = thefilename + this->Filename;
+	thefilename = thefilename + "Error.lua";
+	ofstream Error(thefilename);
 	if (Error.is_open())
 	{
-		Error << "==ErrorLog==\n";
-		Error << "Error with";
-		Error.close();
-	}
-	returnvalue = (int)lua_tonumber(LuaState, -1);
-	return returnvalue;
-}
-
-bool LuaUsage::GetBooleanValue(string Values)
-{
-	bool returnvalue = false;
-
-	lua_getglobal(LuaState, Values.c_str());
-	if (!lua_isboolean(LuaState, -1))
-	{
-		LuaErrorLog(Values);
-		exit(EXIT_FAILURE);
-	}
-	returnvalue = (bool)lua_toboolean(LuaState, -1);
-	return returnvalue;
-}
-
-string LuaUsage::GetStringValue(string Values)
-{
-	string returnvalue = "";
-
-	lua_getglobal(LuaState, Values.c_str());
-	if (!lua_isstring(LuaState, -1))
-	{
-		LuaErrorLog(Values);
-		exit(EXIT_FAILURE);
-	}
-	returnvalue = (string)lua_tostring(LuaState, -1);
-	return returnvalue;
-}
-
-char LuaUsage::GetCharacterValue(string Values)
-{
-	string holder = "";
-	lua_getglobal(LuaState, Values.c_str());
-	if (!lua_isnumber(LuaState, -1))
-	{
-		LuaErrorLog(Values);
-		exit(EXIT_FAILURE);
-	}
-	holder = (char)lua_tostring(LuaState, -1);
-
-	
-
-	return 0;
-}
-
-void LuaUsage::LuaErrorLog(string Errorstring)
-{
-	ofstream Error("ErrorLog.lua");
-	if (Error.is_open())
-	{
-		Error << "==ErrorLog==";
-		Error << "Error with";
-		Error << Errorstring;
-		Error.close();
+		Error << "--ErrorLog--" << endl;
+		Error << this->Errorstring << endl;
 	}
 }

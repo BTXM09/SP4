@@ -27,7 +27,7 @@ struct Light
 	Light()
 	{
 		type = LIGHT_POINT;
-		color.Set(1, 1, 1);
+		color.Set(1, 1, 1, 1);
 		power = 1.f;
 		kC = 1.f;
 		kL = 0.f;

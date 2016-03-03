@@ -1,4 +1,3 @@
-
 #include "Application.h"
 
 //Include GLEW
@@ -111,7 +110,7 @@ bool Application::GetMouseUpdate()
 	// Get the mouse button status
 	Button_Left   = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_LEFT);
 	Button_Middle = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_MIDDLE);
-	Button_Right  = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_RIGHT);;
+	Button_Right  = glfwGetMouseButton(m_window, GLFW_MOUSE_BUTTON_RIGHT);
 
 
 
@@ -128,8 +127,13 @@ bool Application::GetMouseUpdate()
 /********************************************************************************
  Get keyboard updates
  ********************************************************************************/
-bool Application::GetKeyboardUpdate()
+bool Application::GetKeyboardUpdate()//Controls can be changed
 {
+	if (IsKeyPressed(VK_ESCAPE))
+	{
+		theGSM->Quit();
+	}
+
 	if (IsKeyPressed('A'))
 	{
 		theGSM->HandleEvents('a');
@@ -163,9 +167,9 @@ bool Application::GetKeyboardUpdate()
 		theGSM->HandleEvents('s', false);
 	}
 	// Jump
-	if (IsKeyPressed(32))
+	if (IsKeyPressed(' '))
 	{
-		theGSM->HandleEvents(32);
+		theGSM->HandleEvents(' ');
 	}
 	// Rotate camera
 	if (IsKeyPressed(VK_LEFT))
@@ -184,6 +188,7 @@ bool Application::GetKeyboardUpdate()
 	{
 		theGSM->HandleEvents(VK_RIGHT, false);
 	}
+	
 	if (IsKeyPressed(VK_UP))
 	{
 		theGSM->HandleEvents(VK_UP);
@@ -233,6 +238,46 @@ Application::~Application()
 /********************************************************************************
  Initialise this program
  ********************************************************************************/
+void Application::CheckInit()
+{
+	LuaUsage* Checker = new LuaUsage();
+	Save* LuaSave = new Save();
+	if (Checker->LuaUsageCheckit("Application"))
+	{
+		LuaSave->SaveEveryThing(0);
+	}
+	if (Checker->LuaUsageCheckit("Button"))
+	{
+		LuaSave->SaveEveryThing(1);
+	}
+	if (Checker->LuaUsageCheckit("Item"))
+	{
+		LuaSave->SaveEveryThing(2);
+	}
+	if (Checker->LuaUsageCheckit("Level"))
+	{
+		LuaSave->SaveEveryThing(3);
+	}
+	if (Checker->LuaUsageCheckit("LeveltoSave"))
+	{
+		LuaSave->SaveEveryThing(4);
+	}
+	if (Checker->LuaUsageCheckit("Player"))
+	{
+		LuaSave->SaveEveryThing(5);
+	}
+	if (Checker->LuaUsageCheckit("Sound"))
+	{
+		LuaSave->SaveEveryThing(6);
+	}
+	if (Checker->LuaUsageCheckit("Sprite"))
+	{
+		LuaSave->SaveEveryThing(7);
+	}
+	delete LuaSave;
+	delete Checker;
+}
+
 void Application::Init()
 {
 	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -251,11 +296,14 @@ void Application::Init()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); //Request a specific OpenGL version
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // To make MacOS happy; should not be needed
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL 
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); //Does not allow scaleable window
+	
+	CheckInit();
 
 	theAppLua = new LuaUsage();
-	theAppLua->LuaUsageInit("Application.Lua");
-	m_window_height = theAppLua->GetIntegerValue("SCREENHEIGHT");
-	m_window_width = theAppLua->GetIntegerValue("SCREENWIDTH");
+	theAppLua->LuaUsageInit("Application");
+	m_window_height = theAppLua->get<float>("WindowSize.ScreenSize.ScreenHeight");
+	m_window_width = theAppLua->get<float>("WindowSize.ScreenSize.ScreenWidth");
 	theAppLua->LuaUsageClose();
 
 
@@ -301,7 +349,7 @@ void Application::Init()
 	// Initialise the GSM
 	theGSM = new CGameStateManager();
 	theGSM->Init("DM2240 with Game State Management", m_window_width, m_window_height);
-	theGSM->ChangeState( CPlayState::Instance() );
+	theGSM->ChangeState(CMenuState::Instance());
 }
 
 /********************************************************************************
@@ -310,7 +358,7 @@ void Application::Init()
 void Application::Run()
 {
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
-	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
+	while (theGSM->Running() && !glfwWindowShouldClose(m_window))
 	{
 		// Get the elapsed time
 		m_dElapsedTime = m_timer.getElapsedTime();

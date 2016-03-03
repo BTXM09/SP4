@@ -22,10 +22,10 @@ Mesh* MeshBuilder::GenerateRay(const std::string &meshName, const float length)
 	Vertex v;
 	std::vector<Vertex> vertex_buffer_data;
 	v.pos.Set(0, 0, 0);
-	v.color.Set(1, 1, 0);
+	v.color.Set(1, 1, 0, 1);
 	vertex_buffer_data.push_back(v);
 	v.pos.Set(0, 0, length);
-	v.color.Set(1, 1, 0);
+	v.color.Set(1, 1, 0, 1);
 	vertex_buffer_data.push_back(v);
 
 	std::vector<GLuint> index_buffer_data;
@@ -64,22 +64,22 @@ Mesh* MeshBuilder::GenerateAxes(const std::string &meshName, float lengthX, floa
 	Vertex v;
 	std::vector<Vertex> vertex_buffer_data;
 	v.pos.Set(-1000, 0, 0);
-	v.color.Set(1, 0, 0);
+	v.color.Set(1, 0, 0, 1);
 	vertex_buffer_data.push_back(v);
 	v.pos.Set(1000, 0, 0);
-	v.color.Set(1, 0, 0);
+	v.color.Set(1, 0, 0, 1);
 	vertex_buffer_data.push_back(v);
 	v.pos.Set(0, -1000, 0);
-	v.color.Set(0, 1, 0);
+	v.color.Set(0, 1, 0, 1);
 	vertex_buffer_data.push_back(v);
 	v.pos.Set(0, 1000, 0);
-	v.color.Set(0, 1, 0);
+	v.color.Set(0, 1, 0, 1);
 	vertex_buffer_data.push_back(v);
 	v.pos.Set(0, 0, -1000);
-	v.color.Set(0, 0, 1);
+	v.color.Set(0, 0, 1, 1);
 	vertex_buffer_data.push_back(v);
 	v.pos.Set(0, 0, 1000);
-	v.color.Set(0, 0, 1);
+	v.color.Set(0, 0, 1, 1);
 	vertex_buffer_data.push_back(v);
 
 	std::vector<GLuint> index_buffer_data;
@@ -124,19 +124,19 @@ Mesh* MeshBuilder::GenerateCrossHair(const std::string &meshName, float colour_r
 	std::vector<Vertex> vertex_buffer_data;
 	// Vertex #1
 	v.pos.Set(-length, 0, 0);
-	v.color.Set(colour_r, colour_g, colour_b);
+	v.color.Set(colour_r, colour_g, colour_b, 1);
 	vertex_buffer_data.push_back(v);
 	// Vertex #2
 	v.pos.Set(length, 0, 0);
-	v.color.Set(colour_r, colour_g, colour_b);
+	v.color.Set(colour_r, colour_g, colour_b, 1);
 	vertex_buffer_data.push_back(v);
 	// Vertex #3
 	v.pos.Set(0, -length, 0);
-	v.color.Set(colour_r, colour_g, colour_b);
+	v.color.Set(colour_r, colour_g, colour_b, 1);
 	vertex_buffer_data.push_back(v);
 	// Vertex #4
 	v.pos.Set(0, length, 0);
-	v.color.Set(colour_r, colour_g, colour_b);
+	v.color.Set(colour_r, colour_g, colour_b, 1);
 	vertex_buffer_data.push_back(v);
 
 	std::vector<GLuint> index_buffer_data;
@@ -780,7 +780,7 @@ Mesh* MeshBuilder::Generate2DMesh(const std::string &meshName, Color color, int 
 
 	return mesh;
 }
-SpriteAnimation* MeshBuilder::GenerateSpriteAnimation(const std::string &meshName, unsigned numRow, unsigned numCol)
+SpriteAnimation* MeshBuilder::GenerateSpriteAnimation(const std::string &meshName, Color color, unsigned numRow, unsigned numCol)
 {
 	Vertex v;
 	std::vector<Vertex> vertex_buffer_data;
@@ -797,18 +797,22 @@ SpriteAnimation* MeshBuilder::GenerateSpriteAnimation(const std::string &meshNam
 			float v1 = 1.f - height - i * height;
 
 			v.pos.Set(-0.5f, -0.5f, 0);
+			v.color = color;
 			v.texCoord.Set(u1, v1);
 			vertex_buffer_data.push_back(v);
 
 			v.pos.Set(0.5f, -0.5f, 0);
+			v.color = color;
 			v.texCoord.Set(u1 + width, v1);
 			vertex_buffer_data.push_back(v);
 
 			v.pos.Set(0.5f, 0.5f, 0);
+			v.color = color;
 			v.texCoord.Set(u1 + width, v1 + height);
 			vertex_buffer_data.push_back(v);
 
 			v.pos.Set(-0.5f, 0.5f, 0);
+			v.color = color;
 			v.texCoord.Set(u1, v1 + height);
 			vertex_buffer_data.push_back(v);
 

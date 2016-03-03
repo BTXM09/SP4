@@ -1,24 +1,5 @@
-﻿Build started 16/2/2016 3:15:13 PM.
-     1>Project "C:\Users\teo\Desktop\New folder\New folder\SP4\SP4\SP4\Common\Common.vcxproj" on node 2 (Rebuild target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _VARIADIC_MAX=10 /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\MathUtility.cpp Source\MatrixStack.cpp Source\Mtx44.cpp Source\timer.cpp Source\Vector2.cpp Source\Vector3.cpp
-         Vector3.cpp
-         Vector2.cpp
-         timer.cpp
-         Mtx44.cpp
-         MatrixStack.cpp
-         MathUtility.cpp
-         Generating Code...
-       Lib:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"C:\Users\teo\Desktop\New folder\New folder\SP4\SP4\SP4\Debug\Common.lib" /NOLOGO Debug\MathUtility.obj
-         Debug\MatrixStack.obj
-         Debug\Mtx44.obj
-         Debug\timer.obj
-         Debug\Vector2.obj
-         Debug\Vector3.obj
-         Common.vcxproj -> C:\Users\teo\Desktop\New folder\New folder\SP4\SP4\SP4\Debug\Common.lib
-     1>Done Building Project "C:\Users\teo\Desktop\New folder\New folder\SP4\SP4\SP4\Common\Common.vcxproj" (Rebuild target(s)).
+﻿Build started 3/3/2016 4:47:53 PM.
 
 Build succeeded.
 
-Time Elapsed 00:00:01.80
+Time Elapsed 00:00:00.01

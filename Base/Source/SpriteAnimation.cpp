@@ -3,6 +3,18 @@
 #include "Vertex.h"
 #include <iostream>
 
+SpriteAnimation::SpriteAnimation()
+: Mesh(0)
+, m_row(0)
+, m_col(0)
+, m_currentTime(0)
+, m_currentFrame(0)
+, m_playCount(0)
+, x(0.0f)
+, y(0.0f)
+{
+
+}
 SpriteAnimation::SpriteAnimation(const std::string &meshName, int row, int col)
 : Mesh(meshName)
  , m_row(row)
@@ -10,19 +22,23 @@ SpriteAnimation::SpriteAnimation(const std::string &meshName, int row, int col)
  , m_currentTime(0)
  , m_currentFrame(0)
  , m_playCount(0)
-
+ , x(0.0f)
+ , y(0.0f)
+ , index(0)
+ , speed(0)
 {
  m_anim = NULL;
 }
 SpriteAnimation::~SpriteAnimation()
 {
+	delete this->m_anim;
+	this->m_anim = NULL;
 }
 void SpriteAnimation::Update(double dt)
 {
 	// If animation happens
-	if (m_anim) // If animation happens
+	if (m_anim)
 	{
-
 		m_currentTime += dt;
 
 		int numFrame = Math::Max(1, (m_anim->endFrame - m_anim->startFrame + 1));

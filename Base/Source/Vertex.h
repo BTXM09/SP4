@@ -12,9 +12,9 @@ struct Position
 
 struct Color
 {
-	float r, g, b;
-	Color(float r = 1, float g = 1, float b = 1) {Set(r, g, b);}
-	void Set(float r, float g, float b) {this->r = r; this->g = g; this->b = b;}
+	float r, g, b, alpha;
+	Color(float r = 1, float g = 1, float b = 1, float alpha = 1) { Set(r, g, b, alpha); }
+	void Set(float r, float g, float b, float alpha) { this->r = r; this->g = g; this->b = b; this->alpha = alpha;}
 };
 
 struct TexCoord
